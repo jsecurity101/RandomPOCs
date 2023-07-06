@@ -20,7 +20,7 @@ struct TargetProcess {
 int main(int argc, const char* argv[]) {
     if (argc < 3) {
         printf("Usage: SuspendThreadDriver.exe <PID> <TID>\n");
-        return 0;
+        return 1;
     }
 
 
@@ -31,12 +31,10 @@ int main(int argc, const char* argv[]) {
     hDevice = CreateFileW(L"\\\\.\\gmer64", GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hDevice == INVALID_HANDLE_VALUE || hDevice == NULL) {
 		printf("[-] Failed to get a handle to the device object. Error: %d\n", GetLastError());
-        return 0;
+        return 1;
 	}
 
     printf("[+] Successfully got a handle to the device object.\n");
-
-   
 
     DWORD bytes; 
     TargetProcess data;
@@ -77,7 +75,6 @@ Exit:
     if (hDevice != NULL && hDevice != INVALID_HANDLE_VALUE) {
 		CloseHandle(hDevice);
 	}
-
 
     return 0;
 }

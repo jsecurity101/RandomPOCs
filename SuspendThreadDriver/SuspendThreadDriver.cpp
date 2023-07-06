@@ -7,7 +7,7 @@
 #include <iostream>
 
 //
-// Thank you to ZeroMemoryEx for their POC which made me realize you had to intitiate the parameters first via 0x9876C004. Code: https://github.com/ZeroMemoryEx/Blackout/blob/master/Blackout/Blackout.cpp
+// Thank you to ZeroMemoryEx for their POC which made me realize I needed INITIALIZE_IOCTL_CODE/0x9876C004. Code: https://github.com/ZeroMemoryEx/Blackout/blob/master/Blackout/Blackout.cpp
 //
 #define INITIALIZE_IOCTL_CODE 0x9876C004
 #define SUSPEND_THREAD_IOCTL_CODE 0x9876C098

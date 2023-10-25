@@ -13,3 +13,4 @@ This repository holds POCs I have created for projects, blogs, etc.
 | CreateProcessSetThreadToken | Creates a process then sets the thread token to impersonate |
 | InjectImp | Creates a remote thread in a target process then sets the thread token to impersonate |
 | SuspendThreadDriver | Client for the vulnerable driver -  gmer64.sys. Suspends threads given a ThreadId  |
+| LDAPPatch | Patches EtwEventWrite so that LDAP calls don't get logged  |

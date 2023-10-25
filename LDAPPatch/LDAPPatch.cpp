@@ -181,7 +181,7 @@ int main()
 
     HMODULE hModule = LoadLibrary(L"ntdll.dll");
     if (hModule == NULL) {
-		printf("Failed to load wldap32.dll\n");
+		printf("Failed to load ntdll.dll\n");
 		return 1;
 	}
     LdapSearch1();

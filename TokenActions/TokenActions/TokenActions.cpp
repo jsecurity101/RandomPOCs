@@ -411,6 +411,35 @@ Cleanup:
     return ret;
 }
 
+BOOL SetProcessSession(DWORD ProcessId, ULONG SessionId)
+{
+    HANDLE hProcess = NULL;
+    NTSTATUS status;
+
+    hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessId);
+    if (hProcess == NULL)
+    {
+		printf("OpenProcess Failed (%d).\n", GetLastError());
+		return FALSE;
+	}
+
+    PROCESS_SESSION_INFORMATION psi;
+    psi.SessionId = SessionId;
+
+    status = NtSetInformationProcess(hProcess, ProcessSessionInformation, &psi, sizeof(psi));
+    if (status != 0)
+    {
+        printf("NtSetInformationProcess Failed (%d).\n", status);
+        CloseHandle(hProcess);
+        return FALSE;
+    }
+    printf("[*] ProcessSessionInformation Set\n");
+
+    CloseHandle(hProcess);
+    return TRUE;
+
+}
+
 BOOL ChangeTokenSessionId()
 {
     BOOL ret = FALSE;
@@ -422,7 +451,7 @@ BOOL ChangeTokenSessionId()
     HANDLE susToken = NULL;
     HANDLE hProcess = NULL;
     NTSTATUS status;
-    DWORD TokenSession = 2;
+    ULONG TokenSession = 2;
     STARTUPINFO si = { 0 };
     HANDLE hThreadSnap = INVALID_HANDLE_VALUE;
     si.cb = sizeof STARTUPINFO;
@@ -507,7 +536,8 @@ BOOL ChangeTokenSessionId()
         printf("CreateProcess Failed\n");
         goto Cleanup;
     }
-   // hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessId);
+    printf("[*] CreateProcess was successful\n");
+
 
     //
    // Getting a handle to the newly created process's default token
@@ -608,7 +638,7 @@ Cleanup:
 int main(int argc, char* argv[])
 {
     DWORD Option = atoi(argv[1]);
-    if (Option != 2 && argc < 2)
+    if (argc == 0)
     {
         printf("TokenActions.exe <Option - 1|2|3|4> <ProcessId> <ThreadId>\n");
         printf("Option 1 = ThreadImpersonation\n");
@@ -629,7 +659,6 @@ int main(int argc, char* argv[])
     }
     case 2:
     {
-        DWORD FirstProcessId = atoi(argv[2]);
         ChangeTokenSessionId();
         break;
     }
@@ -645,6 +674,13 @@ int main(int argc, char* argv[])
         DWORD FirstProcessId = atoi(argv[2]);
         ImpersonateChangeTokenSessionId(FirstProcessId);
         break;
+    }
+    case 5:
+    {
+        DWORD FirstProcessId = atoi(argv[2]);
+		ULONG SessionId = atoi(argv[3]);
+        SetProcessSession(FirstProcessId, SessionId);
+		break;
     }
     default:
     {
